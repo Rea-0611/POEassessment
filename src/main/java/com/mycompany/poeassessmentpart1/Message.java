@@ -11,7 +11,56 @@ public class Message {
     private int messageCounter = 1;
     private int maxMessages;
     private int messageCount = 0;
+
+    public String getMessageID() {
+        return messageID;
+    }
+
+    public void setMessageID(String messageID) {
+        this.messageID = messageID;
+    }
+
+    public String getRecipientcellNumber() {
+        return recipientcellNumber;
+    }
+
+    public void setRecipientcellNumber(String recipientcellNumber) {
+        this.recipientcellNumber = recipientcellNumber;
+    }
+
+    public String getMessageText() {
+        return messageText;
+    }
+
+    public void setMessageText(String messageText) {
+        this.messageText = messageText;
+    }
+
+    public int getMessageCounter() {
+        return messageCounter;
+    }
+
+    public void setMessageCounter(int messageCounter) {
+        this.messageCounter = messageCounter;
+    }
+
+    public int getMaxMessages() {
+        return maxMessages;
+    }
+
+    public void setMaxMessages(int maxMessages) {
+        this.maxMessages = maxMessages;
+    }
+
+    public int getMessageCount() {
+        return messageCount;
+    }
+
+    public void setMessageCount(int messageCount) {
+        this.messageCount = messageCount;
+    }
      
+    
     // Validate the message ID (should be max 10 characters)
     public boolean checkMessageID(String id) {
         return id.length() <= 10;
@@ -19,7 +68,7 @@ public class Message {
 
     // Validate the recipient cell number (max 10 chars and starts with '+')
     public int checkRecipientCell(String cell) {
-        if (cell.length() <= 10 && cell.startsWith("+")) {
+        if (cell.length() <= 9 && cell.startsWith("+27")) {
             return 1;
         } else {
             return 0;
