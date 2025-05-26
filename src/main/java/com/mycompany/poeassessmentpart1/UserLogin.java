@@ -1,24 +1,26 @@
-
 package com.mycompany.poeassessmentpart1;
+
 import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-import java.util.Scanner;
-import javax.swing.*;
+import javax.swing.JOptionPane;
 import java.util.ArrayList;
-/**
- *
- * @author RC_Student_lab
- */
 
 public class UserLogin {
-    public final ArrayList<UserLogin> users = new ArrayList<>();
+    private final ArrayList<UserLogin> users = new ArrayList<>();
+
     private String username;
-    private String Password;
-    private String phonenumber;
-    private static String Storedusername;
-    private static String Storedpassword;
-        
-  
+    private String password;
+    private String phoneNumber;
+
+    public UserLogin() {
+        // Default constructor
+    }
+
+    public UserLogin(String username, String password, String phoneNumber) {
+        this.username = username;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+    }
+
     public String getUsername() {
         return username;
     }
@@ -28,77 +30,91 @@ public class UserLogin {
     }
 
     public String getPassword() {
-        return Password;
+        return password;
     }
 
     public void setPassword(String password) {
-        this.Password = password;
+        this.password = password;
     }
 
-    public String getPhonenumber() {
-        return phonenumber;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setPhonenumber(String phonenumber) {
-        this.phonenumber = phonenumber;
-    
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
-    public String getStoredusername() {
-        return Storedusername;
+    public  boolean checkUsername(String username) {
+        if (username == null) 
+            return false;
+        return username.contains("_") && username.length() <= 5;
     }
 
-    public void setStoredusername(String Storedusername) {
-        this.Storedusername = Storedusername;
+    public boolean checkPasswordComplexity(String password) {
+        if (password == null) 
+            return false;
+        return password.matches("^(?=.*[A-Z])(?=.*\\d).{9,}$");
     }
 
-    public String getStoredpassword() {
-        return Storedpassword;
-    }
-
-    public void setStoredpassword(String Storedpassword) {
-        this.Storedpassword = Storedpassword;
-    }
-    
-    public static boolean CheckUsername(String username){
-     
-        return username.contains("_") && username.length()<=5;
-       
-    }
-    
-    public static boolean CheckPasswordComplexity(String password) {
-        
-        return password.matches("^(?=.*[A-Z])(?=.*\\d).{8,}$");
-    }
-
-     public static boolean CheckPhoneNumber(String phoneNumber) {
-         
-        return Pattern.matches("\\+27[0-9]{9}", phoneNumber);
-    }
-
- 
-    public static String registerUser(String username , String Password){
-        if (!CheckUsername(username)){
-            return "Username is incorrectly formatted. It must contain an underscore and no more than five letters";
+    public boolean checkPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null)
+            return false;
+        // Correct regex for South African phone number starting with +27 followed by 9 digits
+        String regex = "^\\+27[0-9]{9}$";
+        boolean isValid = Pattern.matches(regex, phoneNumber);
+        if (!isValid) {
+            JOptionPane.showMessageDialog(null,
+                "Phone number is incorrectly formatted. It must start with +27 and contain exactly 9 digits.");
         }
-        if (!CheckPasswordComplexity(Password)){
-            return"Password is incorrectly formatted. It must contain a capital letter, a number, a special character and it must be at least 8 letters";
+        return isValid;
+    }
+
+    public boolean registerUser() {
+        if (!checkUsername(this.username)) {
+            JOptionPane.showMessageDialog(null,
+                "Username is incorrectly formatted. It must contain an underscore and no more than five characters.");
+            return false;
         }
-        Storedusername = username;
-        Storedpassword = Password;
-        return "User successfully registered!";
+        if (!checkPhoneNumber(this.phoneNumber)) {
+            return false;
+        }
+        if (!checkPasswordComplexity(this.password)) {
+            JOptionPane.showMessageDialog(null,
+                "Password is incorrectly formatted. It must contain a capital letter, a number, and be at least 9 characters long.");
+            return false;
+        }
+        // Check if username already exists (case-insensitive)
+        for (UserLogin user : users) {
+            if (user.getUsername().equalsIgnoreCase(this.username)) {
+                JOptionPane.showMessageDialog(null,
+                    "Username already exists. Please choose a different username.");
+                return false;
+            }
+        }
         
+        JOptionPane.showMessageDialog(null, "User successfully registered!");
+        return true;
     }
-    public static boolean loginUser ( String username , String Password){
-        return username.equals(Storedusername)&& Password.equals(Storedpassword);
+
+    public  boolean loginUser(String username, String password) {
+        if (username == null || password == null) return false;
+        for (UserLogin user : users) {
+            if (this.username.equals(username) 
+                && user.getPassword().equals(password)) {
+                return true;
+            }
+        }
+        return false;
     }
-    public String returnLoginStatus(String username , String Password){
-        if(loginUser (username,Password)){
-            return "Welcome" + Storedusername + " , it is great to see you again!";
-        }else{
+
+    public String returnLoginStatus(String username, String password) {
+        if (loginUser(username, password)) {
+            return "Welcome " + username + ", it is great to see you again!";
+        } else {
             return "Login failed. Please re-check your entered username and password.";
         }
     }
-    
-       
+
 }
+
